@@ -12,20 +12,25 @@ public class Player : MonoBehaviour
     public Object effectPrefab;
     public GameObject respawnPlatform;
 
+    GameManager gameManager;
     int score = 0;
     Vector3 startPosition;
     GameObject effect;
     Renderer render;
     Collider2D collide;
+    SpriteGlow spriteGlow;
 
     // Use this for initialization
     void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<GameManager>();
         render = GetComponent<Renderer>();
         collide = GetComponent<Collider2D>();
+        spriteGlow = GetComponent<SpriteGlow>();
         startPosition = transform.position;
         Invoke("HideRespawnPlatform", 5);
         Invoke("EnableMovement", 5);
+
     }
     
     // Update is called once per frame
@@ -38,6 +43,9 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.tag == "InstantDeath")
             Die();
+
+        if (collision.gameObject.tag == "Player")
+            gameManager.TagPlayer(collision.gameObject.GetComponent<Player>());
     }
 
     void OnCollisionExit2D(Collision2D collision)
@@ -96,5 +104,37 @@ public class Player : MonoBehaviour
     public void EnableMovement()
     {
         GetComponent<Move>().enabled = true;
+    }
+
+    public void Glow(bool glow)
+    {
+        spriteGlow.enabled = glow;
+    }
+
+    public void Pulse(float seconds)
+    {
+        StartCoroutine(PulseEnumerator(seconds));
+    }
+
+    private IEnumerator PulseEnumerator(float seconds)
+    {
+        float[] hdrColors = { spriteGlow.GlowColor.r, spriteGlow.GlowColor.g, spriteGlow.GlowColor.b };
+        float maxBrightness = Mathf.Max(hdrColors);
+        float elapsedTime = 0;
+        float pulsePeriod = 0.2f;
+        while (elapsedTime < seconds)
+        {
+            elapsedTime += Time.deltaTime;
+            float wave = elapsedTime / pulsePeriod * Mathf.PI;
+            float brightness = (Mathf.Sin(wave) + 1) / 2;
+
+            spriteGlow.GlowColor.r = Mathf.Lerp(hdrColors[0], hdrColors[0] / maxBrightness, brightness);
+            spriteGlow.GlowColor.g = Mathf.Lerp(hdrColors[1], hdrColors[1] / maxBrightness, brightness);
+            spriteGlow.GlowColor.b = Mathf.Lerp(hdrColors[2], hdrColors[2] / maxBrightness, brightness);
+            
+            yield return null;
+        }
+
+        yield break;
     }
 }
