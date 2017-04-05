@@ -1,36 +1,36 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    public int score = 0;
     public string color;
     public Text scoreText;
-    public Text gameOverText;
     public Player otherPlayer;
     public Object effectPrefab;
     public GameObject respawnPlatform;
 
     GameManager gameManager;
-    int score = 0;
     Vector3 startPosition;
     GameObject effect;
     Renderer render;
     Collider2D collide;
     SpriteGlow spriteGlow;
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
         gameManager = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<GameManager>();
         render = GetComponent<Renderer>();
         collide = GetComponent<Collider2D>();
         spriteGlow = GetComponent<SpriteGlow>();
         startPosition = transform.position;
+    }
+
+    void Start()
+    {
         Invoke("HideRespawnPlatform", 5);
         Invoke("EnableMovement", 5);
-
     }
     
     // Update is called once per frame
@@ -61,8 +61,6 @@ public class Player : MonoBehaviour
         effect = Instantiate(effectPrefab) as GameObject;
         effect.transform.position = transform.position;
         otherPlayer.IncrementScore();
-
-        // Wait 5 seconds and respawn
         Invoke("Respawn", 3);
     }
 
@@ -80,22 +78,8 @@ public class Player : MonoBehaviour
     {
         score += 1;
         scoreText.text = score.ToString();
-
-        if (score == 10)
-        {
-            gameOverText.enabled = true;
-            gameOverText.text = "Game Over\n" + color + " Wins!";
-            EnableMovement();
-            otherPlayer.EnableMovement();
-            Invoke("RestartLevel", 5);
-        }
     }
-
-    void RestartLevel()
-    {
-        SceneManager.LoadScene("Level_Lava");
-    }
-
+    
     void HideRespawnPlatform()
     {
         respawnPlatform.SetActive(false);
@@ -104,6 +88,13 @@ public class Player : MonoBehaviour
     public void EnableMovement()
     {
         GetComponent<Move>().enabled = true;
+        GetComponent<Rigidbody2D>().simulated = true;
+    }
+
+    public void DisableMovement()
+    {
+        GetComponent<Move>().enabled = false;
+        GetComponent<Rigidbody2D>().simulated = false;
     }
 
     public void Glow(bool glow)
