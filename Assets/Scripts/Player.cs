@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     Renderer render;
     Collider2D collide;
     SpriteGlow spriteGlow;
+    bool isStopped = false;
 
     void Awake()
     {
@@ -60,12 +61,15 @@ public class Player : MonoBehaviour
         collide.enabled = false;
         effect = Instantiate(effectPrefab) as GameObject;
         effect.transform.position = transform.position;
-        otherPlayer.IncrementScore();
+        gameManager.PlayerDied(this);
         Invoke("Respawn", 3);
     }
 
     void Respawn()
     {
+        if (isStopped)
+            return;
+
         respawnPlatform.SetActive(true);
         Invoke("HideRespawnPlatform", 5);
         Destroy(effect);
@@ -77,9 +81,25 @@ public class Player : MonoBehaviour
     public void IncrementScore()
     {
         score += 1;
+        SetScore(score);
+    }
+
+    public void DecrementScore()
+    {
+        score -= 1;
+
+        if (score < 0)
+            score = 0;
+
+        SetScore(score);
+    }
+
+    public void SetScore(int s)
+    {
+        score = s;
         scoreText.text = score.ToString();
     }
-    
+
     void HideRespawnPlatform()
     {
         respawnPlatform.SetActive(false);
@@ -91,8 +111,9 @@ public class Player : MonoBehaviour
         GetComponent<Rigidbody2D>().simulated = true;
     }
 
-    public void DisableMovement()
+    public void Stop()
     {
+        isStopped = true;
         GetComponent<Move>().enabled = false;
         GetComponent<Rigidbody2D>().simulated = false;
     }
