@@ -53,6 +53,10 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        TeleportPlayer(redPlayer);
+        TeleportPlayer(bluePlayer);
+        
         switch (gameMode)
         {
             case GameMode.Battle:
@@ -84,6 +88,16 @@ public class GameManager : MonoBehaviour {
                 }
                 break;
         }
+    }
+
+    private void TeleportPlayer(Player player)
+    {
+        float xBoundary = 22;
+
+        if (player.transform.position.x >= xBoundary)
+            player.transform.position = new Vector3(-xBoundary, player.transform.position.y, player.transform.position.z);
+        else if (player.transform.position.x <= -xBoundary)
+            player.transform.position = new Vector3(xBoundary, player.transform.position.y, player.transform.position.z);
     }
 
     public void GameOver(Player winner)
