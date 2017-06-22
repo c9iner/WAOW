@@ -131,9 +131,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0083f072b0adf64caf7ea5a913fa3a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  score: 0
   color: Blue
   scoreText: {fileID: 0}
-  gameOverText: {fileID: 0}
   otherPlayer: {fileID: 0}
   effectPrefab: {fileID: 100000, guid: fabdd45f98921b547b28c84c0818d2a4, type: 2}
   respawnPlatform: {fileID: 0}

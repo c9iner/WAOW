@@ -6,6 +6,7 @@ TagManager:
   tags:
   - InstantDeath
   - Game Manager
+  - GameConfig
   layers:
   - Default
   - TransparentFX

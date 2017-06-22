@@ -3,14 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
-
-    public enum GameMode
-    {
-        Battle,
-        Tag
-    }
-
-    public GameMode gameMode;
+    
+    public GameConfig.GameMode gameMode;
     public Timer timer;
     public Countdown countdown;
     public Player bluePlayer;
@@ -26,17 +20,27 @@ public class GameManager : MonoBehaviour {
     // Battle
     private int battleWinScore = 10;
 
+    private GameConfig config;
+    
     // Use this for initialization
     void Start () {
-        timer.gameObject.SetActive(false);
-        countdown.gameObject.SetActive(true);
+
+        config = GameObject.FindGameObjectWithTag("GameConfig").GetComponent<GameConfig>();
+        gameMode = config.gameMode;
 
         switch (gameMode)
         {
-            case GameMode.Battle:
-                break;
-            case GameMode.Tag:
+            case GameConfig.GameMode.Battle:
                 {
+                    timer.gameObject.SetActive(false);
+                    countdown.gameObject.SetActive(true);
+                }
+                break;
+            case GameConfig.GameMode.Tag:
+                {
+                    timer.gameObject.SetActive(false);
+                    countdown.gameObject.SetActive(true);
+
                     redPlayer.SetScore(3);
                     bluePlayer.SetScore(3);
 
@@ -53,22 +57,25 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-        TeleportPlayer(redPlayer);
-        TeleportPlayer(bluePlayer);
         
         switch (gameMode)
         {
-            case GameMode.Battle:
-                { 
+            case GameConfig.GameMode.Battle:
+                {
+                    TeleportPlayer(redPlayer);
+                    TeleportPlayer(bluePlayer);
+
                     // Score
                     Player winner = (bluePlayer.score == battleWinScore) ? bluePlayer : (redPlayer.score == battleWinScore) ? redPlayer : null;
                     if (winner != null)
                         GameOver(winner);
                 }
                 break;
-            case GameMode.Tag:
+            case GameConfig.GameMode.Tag:
                 {
+                    TeleportPlayer(redPlayer);
+                    TeleportPlayer(bluePlayer);
+
                     // Score
                     Player winner = (bluePlayer.score == tagWinScore) ? redPlayer : (redPlayer.score == tagWinScore) ? bluePlayer : null;
                     if (winner != null)
@@ -92,6 +99,9 @@ public class GameManager : MonoBehaviour {
 
     private void TeleportPlayer(Player player)
     {
+        if (player == null)
+            return;
+
         float xBoundary = 22;
 
         if (player.transform.position.x >= xBoundary)
@@ -134,12 +144,12 @@ public class GameManager : MonoBehaviour {
     {
         switch (gameMode)
         {
-            case GameMode.Battle:
+            case GameConfig.GameMode.Battle:
                 {
                     player.otherPlayer.IncrementScore();
                 }
                 break;
-            case GameMode.Tag:
+            case GameConfig.GameMode.Tag:
                 {
                     player.DecrementScore();
                 }
@@ -149,6 +159,6 @@ public class GameManager : MonoBehaviour {
     
     void RestartLevel()
     {
-        SceneManager.LoadScene("Level_Lava");
+        SceneManager.LoadScene("MainMenu");
     }
 }
