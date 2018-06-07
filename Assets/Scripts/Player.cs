@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
             Die();
 
         if (collision.gameObject.tag == "Player")
-            gameManager.TagPlayer(collision.gameObject.GetComponent<Player>());
+            gameManager.PlayerCollision(collision.gameObject.GetComponent<Player>());
     }
 
     void OnCollisionExit2D(Collision2D collision)
