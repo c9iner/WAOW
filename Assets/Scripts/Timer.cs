@@ -8,6 +8,7 @@ public class Timer : MonoBehaviour {
     public float duration;
     
     private bool isExpired = false;
+    private bool isStopped = false;
     private Text text;
     private float currentTime;
 
@@ -20,7 +21,10 @@ public class Timer : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
+
+        if (isStopped)
+            return;
+
         if (currentTime > 0)
         {
             currentTime -= Time.deltaTime;
@@ -44,5 +48,10 @@ public class Timer : MonoBehaviour {
     public bool IsExpired()
     {
         return isExpired;
+    }
+
+    public void Stop()
+    {
+        isStopped = true;
     }
 }
