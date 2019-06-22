@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TagRadioButton : RadioButton {
 
-    GameConfig.GameMode gameMode;
+    GameConfig.GameMode gameMode = GameConfig.GameMode.Tag;
     GameConfig config;
 
     public new void Awake()

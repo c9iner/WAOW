@@ -45,11 +45,10 @@ public class GameManager : MonoBehaviour {
                     bluePlayer.SetScore(3);
 
                     // Tag a random player
-                    int random = Random.Range(0, 2);
-                    if (random == 0)
-                        TagPlayer(redPlayer);
+                    if (Random.Range(0, 2) == 0)
+                        PlayerCollision(redPlayer);
                     else
-                        TagPlayer(bluePlayer);
+                        PlayerCollision(bluePlayer);
                 }
                 break;
         }
@@ -124,19 +123,22 @@ public class GameManager : MonoBehaviour {
         tagTimer = 0;
     }
 
-    public void TagPlayer(Player player)
+    public void PlayerCollision(Player player)
     {
-        if (tagTimer < tagCooloffDuration)
-            return;
-
-        if (player != taggedPlayer)
+        if (gameMode == GameConfig.GameMode.Tag)
         {
-            RestartTagTimer();
-            if (taggedPlayer != null)
-                taggedPlayer.Glow(false);
-            player.Glow(true);
-            player.Pulse(tagCooloffDuration);
-            taggedPlayer = player;
+            if (tagTimer < tagCooloffDuration)
+                return;
+
+            if (player != taggedPlayer)
+            {
+                RestartTagTimer();
+                if (taggedPlayer != null)
+                    taggedPlayer.Glow(false);
+                player.Glow(true);
+                player.Pulse(tagCooloffDuration);
+                taggedPlayer = player;
+            }
         }
     }
 
